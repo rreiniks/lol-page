@@ -14,6 +14,7 @@ import { SummonersriftComponent } from './summonersrift/summonersrift.component'
 import { HowlingabyssComponent } from './howlingabyss/howlingabyss.component';
 import { BlindComponent } from './summonersrift/blind/blind.component';
 import { SummonerComponent } from './summoner/summoner.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -32,9 +33,12 @@ import { SummonerComponent } from './summoner/summoner.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    HttpClient,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
