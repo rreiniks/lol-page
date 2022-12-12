@@ -1,7 +1,7 @@
 <div class="container p-5 my-5 bg-dark text-white">
   <div class="row">
     <label for="name" class="display-1 pb-5 text-center">Input your summoner name</label>
-    <input type="text" id="name" class="form-control" name="name">
+    <input [(ngModel)]="name" type="text" id="name" class="form-control" name="name">
     <label for="region" class="display-1 pb-5 pt-5 text-center">Choose your region</label>
     <select [(ngModel)]="region" id="region" class="form-control" name="region">
       <option value="EUW1">Europe West</option>
@@ -17,7 +17,10 @@
       <option value="TR1">Turkey</option>
     </select>
     <div class="mx-auto d-grid col-1 pt-5">
-    <button (click)="showSummonerData()" class="btn-info btn">SEARCH</button>
+      <button (click)="onSearch()" class="btn-info btn">SEARCH</button>
+    </div>
+    <div class="mx-auto d-grid col-1 pt-5">
+      <button (click)="summoner()" class="btn-info btn">Summoner</button>
     </div>
   </div>
 </div>

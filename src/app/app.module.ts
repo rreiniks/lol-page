@@ -14,7 +14,8 @@ import { SummonersriftComponent } from './summonersrift/summonersrift.component'
 import { HowlingabyssComponent } from './howlingabyss/howlingabyss.component';
 import { BlindComponent } from './summonersrift/blind/blind.component';
 import { SummonerComponent } from './summoner/summoner.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { PieChartModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    PieChartModule
   ],
   providers: [
     HttpClient,

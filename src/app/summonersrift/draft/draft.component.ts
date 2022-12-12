@@ -12,4 +12,19 @@ export class DraftComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  data = [
+    {
+      name: 'Apples',
+      value: 10
+    },
+    {
+      name: 'Bananas',
+      value: 20
+    },
+    {
+      name: 'Oranges',
+      value: 5
+    }
+  ];
+  
 }
