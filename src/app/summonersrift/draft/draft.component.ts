@@ -14,16 +14,12 @@ export class DraftComponent implements OnInit {
 
   data = [
     {
-      name: 'Apples',
-      value: 10
+      name: 'Win',
+      value: 55
     },
     {
-      name: 'Bananas',
-      value: 20
-    },
-    {
-      name: 'Oranges',
-      value: 5
+      name: 'Lose',
+      value: 45
     }
   ];
   

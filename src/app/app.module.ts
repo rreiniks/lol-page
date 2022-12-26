@@ -14,8 +14,10 @@ import { SummonersriftComponent } from './summonersrift/summonersrift.component'
 import { HowlingabyssComponent } from './howlingabyss/howlingabyss.component';
 import { BlindComponent } from './summonersrift/blind/blind.component';
 import { SummonerComponent } from './summoner/summoner.component';
-import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { PieChartModule } from '@swimlane/ngx-charts';
+import { RiotService } from './shared/riot.service';
+import { DatabaseService } from './shared/database.service';
 
 @NgModule({
   declarations: [
@@ -29,17 +31,19 @@ import { PieChartModule } from '@swimlane/ngx-charts';
     SummonersriftComponent,
     HowlingabyssComponent,
     BlindComponent,
-    SummonerComponent,
+    SummonerComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    PieChartModule
+    PieChartModule,
   ],
   providers: [
     HttpClient,
+    RiotService,
+    DatabaseService
   ],
   bootstrap: [AppComponent]
 })

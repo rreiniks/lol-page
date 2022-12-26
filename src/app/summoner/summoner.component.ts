@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Summoner } from './summoner.model';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { RiotService } from '../shared/riot.service';
+import { DatabaseService } from '../shared/database.service';
 
 @Component({
   selector: 'app-summoner',
@@ -10,56 +10,64 @@ import { Router } from '@angular/router';
 })
 export class SummonerComponent implements OnInit {
 
-  currentSummoner!: Summoner;
-  apiKey = "RGAPI-acaa1091-86ba-40ad-8334-a1ae280dd570";
+  currentSummoner = new Summoner;
   region = "EUW1";
-  name!: string;
-  link!: string;
+  username!: string;
+  errorCode!: number;
+  errorMsg!: string;
 
-  constructor(private http: HttpClient, private router: Router) { }
+
+
+  constructor(private riotService: RiotService, private databaseService: DatabaseService) { }
 
   ngOnInit(): void {
   }
 
-  onSearch() {
-    this.getRiotSummonerData(); //get data from riot api about a summoner
+  async onSearch() {
+    this.currentSummoner = new Summoner;
+    
+    await this.getRiotSummonerData(); //get data from riot api about summoner
+
+    if (this.currentSummoner.name.toLowerCase() === this.username.toLowerCase()) {  //if summoner exists
+      var len = null;
+      this.databaseService.checkForSummoner(this.currentSummoner.puuid).then(response => len = response);
+      console.log(len);
+      if(len === 1)console.log('test');
+      /*this.databaseService.putSummoner(this.currentSummoner).subscribe(res => {
+        console.log(res);
+      });*/
+    } else if (this.errorCode) {  //if riot api responded with an error
+      console.log(this.errorCode);
+      console.log(this.errorMsg);
+    } else {  //any other error
+      console.log('Unexpected error');
+    }
+
     //this.checkDatabaseForSummoner();  //check if his data has been processed before
-    this.summoner(); //shows summoner that was found
+    //shows summoner that was found
     // redirect to data page
   }
 
-  getRiotSummonerData() {
-    this.link = 'https://' + this.region + '.api.riotgames.com/lol/summoner/v4/summoners/by-name/' + this.name + "?api_key=" + this.apiKey;
-    this.getSummonerData().subscribe((data: any) => this.currentSummoner = {
-      puuid: data.puuid,
-      name: data.name,
-      profileIconId: data.profileIconId,
-      summonerLevel: data.summonerLevel,
+  async getRiotSummonerData() {
+
+    return new Promise(resolve => {
+      this.riotService.getRiotSummonerData(this.region, this.username).subscribe(res => {
+        var data: any;
+        data = res;
+        if (data.name) {
+          this.currentSummoner.name = data.name;
+          this.currentSummoner.summonerLevel = data.summonerLevel;
+          this.currentSummoner.profileIconId = data.profileIconId;
+          this.currentSummoner.puuid = data.puuid;
+        } else if (data.status.status_code && data.status.message) {
+          this.errorCode = data.status.status_code;
+          this.errorMsg = data.status.message;
+        }
+        console.log(data);
+        resolve(null);
+      });
     });
+
   }
-
-  /*checkDatabaseForSummoner() {
-    //check if summoner exists by puuid
-    if(this.http.get('https://lol-page-e3f05-default-rtdb.europe-west1.firebasedatabase.app/' + this.currentSummoner.puuid)){
-      //get summoner data if it does
-      console.log('test');
-    }else
-    //put summoner if it doesnt
-      this.http.put('https://lol-page-e3f05-default-rtdb.europe-west1.firebasedatabase.app/' + this.currentSummoner.puuid, this.currentSummoner).subscribe(response => {
-        console.log(response);
-    });
-    
-   
-  }*/
-
-  getSummonerData() {
-    return (this.http.get<any>(this.link));
-  }
-
-  summoner() {
-    console.log(this.currentSummoner);
-    if(this.currentSummoner) this.router.navigate(['rift']);
-  }
-
 
 }
