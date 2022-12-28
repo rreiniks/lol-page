@@ -13,6 +13,7 @@ export class DatabaseService {
         this.http.get('http://localhost:3000/summoners/' + puuid).subscribe(res => {
             var data: any;
             data = res;
+            console.log(data);
             resolve(data.length);
         })
         });

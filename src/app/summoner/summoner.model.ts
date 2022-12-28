@@ -3,4 +3,5 @@ export class Summoner {
     name!: string;
     profileIconId!: number;
     summonerLevel!: number;
+    accountId!: string;
 }

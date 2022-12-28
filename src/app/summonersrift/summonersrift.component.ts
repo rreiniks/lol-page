@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Summoner } from '../summoner/summoner.model';
 
 @Component({
   selector: 'app-summonersrift',
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SummonersriftComponent implements OnInit {
 
-  constructor() { }
+  constructor(private route: ActivatedRoute) { }
+
+  currentSummoner!: Summoner;
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      var data: any;
+      data = params;
+      this.currentSummoner = data;
+    })
   }
 
 }

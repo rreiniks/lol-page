@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Summoner } from './summoner.model';
 import { RiotService } from '../shared/riot.service';
 import { DatabaseService } from '../shared/database.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-summoner',
@@ -18,34 +19,40 @@ export class SummonerComponent implements OnInit {
 
 
 
-  constructor(private riotService: RiotService, private databaseService: DatabaseService) { }
+  constructor(private riotService: RiotService, private databaseService: DatabaseService, private router: Router) { }
 
   ngOnInit(): void {
   }
 
   async onSearch() {
     this.currentSummoner = new Summoner;
-    
+
     await this.getRiotSummonerData(); //get data from riot api about summoner
 
-    if (this.currentSummoner.name.toLowerCase() === this.username.toLowerCase()) {  //if summoner exists
+    if(this.currentSummoner.name){
+      if (this.currentSummoner.name.toLowerCase() === this.username.toLowerCase()) {  //if summoner exists
+
       var len = null;
-      this.databaseService.checkForSummoner(this.currentSummoner.puuid).then(response => len = response);
+      await this.databaseService.checkForSummoner(this.currentSummoner.puuid).then(response => len = response); //check if summoner exists in database
       console.log(len);
-      if(len === 1)console.log('test');
-      /*this.databaseService.putSummoner(this.currentSummoner).subscribe(res => {
+
+      if (len === 1) {  //summoner exists in database
+     
+
+      if(!len)  this.databaseService.putSummoner(this.currentSummoner).subscribe(res => {
         console.log(res);
-      });*/
-    } else if (this.errorCode) {  //if riot api responded with an error
+      })};; //summoner doesnt exist in database
+
+      this.router.navigate(['/rift'], {queryParams: this.currentSummoner});
+    }}
+    else if (this.errorCode) {  //if riot api responded with an error
       console.log(this.errorCode);
       console.log(this.errorMsg);
-    } else {  //any other error
+    }
+    else {  //any other error 
       console.log('Unexpected error');
     }
-
-    //this.checkDatabaseForSummoner();  //check if his data has been processed before
-    //shows summoner that was found
-    // redirect to data page
+    
   }
 
   async getRiotSummonerData() {
@@ -54,12 +61,15 @@ export class SummonerComponent implements OnInit {
       this.riotService.getRiotSummonerData(this.region, this.username).subscribe(res => {
         var data: any;
         data = res;
+        
         if (data.name) {
           this.currentSummoner.name = data.name;
           this.currentSummoner.summonerLevel = data.summonerLevel;
           this.currentSummoner.profileIconId = data.profileIconId;
           this.currentSummoner.puuid = data.puuid;
-        } else if (data.status.status_code && data.status.message) {
+          this.currentSummoner.accountId = data.accountId;
+        } 
+        else if (data.status.status_code && data.status.message) {
           this.errorCode = data.status.status_code;
           this.errorMsg = data.status.message;
         }
