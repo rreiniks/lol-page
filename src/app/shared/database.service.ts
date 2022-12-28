@@ -1,4 +1,4 @@
-import { Injectable, resolveForwardRef } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Summoner } from '../summoner/summoner.model';
 
