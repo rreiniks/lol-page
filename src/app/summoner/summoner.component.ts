@@ -3,6 +3,7 @@ import { Summoner } from './summoner.model';
 import { RiotService } from '../shared/riot.service';
 import { DatabaseService } from '../shared/database.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../shared/auth.service';
 
 @Component({
   selector: 'app-summoner',
@@ -19,7 +20,7 @@ export class SummonerComponent implements OnInit {
 
 
 
-  constructor(private riotService: RiotService, private databaseService: DatabaseService, private router: Router) { }
+  constructor(private riotService: RiotService, private databaseService: DatabaseService, private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
   }
@@ -34,23 +35,24 @@ export class SummonerComponent implements OnInit {
 
       var len = null;
       await this.databaseService.checkForSummoner(this.currentSummoner.puuid).then(response => len = response); //check if summoner exists in database
-      console.log(len);
-
-      if (len === 1) {  //summoner exists in database
-     
 
       if(!len)  this.databaseService.putSummoner(this.currentSummoner).subscribe(res => {
         console.log(res);
-      })};; //summoner doesnt exist in database
+      });; //summoner doesnt exist in database
 
-      this.router.navigate(['/rift'], {queryParams: this.currentSummoner});
+      if (len === 1){  //summoner exists in database
+        this.authService.auth();
+        this.router.navigate(['/rift'], {queryParams: this.currentSummoner});
+      }
     }}
     else if (this.errorCode) {  //if riot api responded with an error
       console.log(this.errorCode);
       console.log(this.errorMsg);
+      this.authService.deAuth;
     }
     else {  //any other error 
       console.log('Unexpected error');
+      this.authService.deAuth;
     }
     
   }
