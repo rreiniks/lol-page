@@ -48,11 +48,11 @@ export class SummonerComponent implements OnInit {
     else if (this.errorCode) {  //if riot api responded with an error
       console.log(this.errorCode);
       console.log(this.errorMsg);
-      this.authService.deAuth;
+      this.authService.deAuth();
     }
     else {  //any other error 
       console.log('Unexpected error');
-      this.authService.deAuth;
+      this.authService.deAuth();
     }
     
   }
