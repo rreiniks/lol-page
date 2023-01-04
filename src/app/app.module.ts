@@ -8,16 +8,19 @@ import { HeaderComponent } from './header/header.component';
 import { ClashComponent } from './clash/clash.component';
 import { RankedComponent } from './summonersrift/ranked/ranked.component';
 import { MasteryComponent } from './mastery/mastery.component';
-import { DraftComponent } from './summonersrift/draft/draft.component';
+import { DraftComponent } from './summonersrift/normal/draft/draft.component';
 import { AramComponent } from './howlingabyss/aram/aram.component';
 import { SummonersriftComponent } from './summonersrift/summonersrift.component';
 import { HowlingabyssComponent } from './howlingabyss/howlingabyss.component';
-import { BlindComponent } from './summonersrift/blind/blind.component';
+import { BlindComponent } from './summonersrift/normal/blind/blind.component';
 import { SummonerComponent } from './summoner/summoner.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { PieChartModule } from '@swimlane/ngx-charts';
 import { RiotService } from './shared/riot.service';
 import { DatabaseService } from './shared/database.service';
+import { SoloComponent } from './summonersrift/ranked/solo/solo.component';
+import { FlexComponent } from './summonersrift/ranked/flex/flex.component';
+import { NormalComponent } from './summonersrift/normal/normal.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,10 @@ import { DatabaseService } from './shared/database.service';
     SummonersriftComponent,
     HowlingabyssComponent,
     BlindComponent,
-    SummonerComponent
+    SummonerComponent,
+    SoloComponent,
+    FlexComponent,
+    NormalComponent,
   ],
   imports: [
     BrowserModule,

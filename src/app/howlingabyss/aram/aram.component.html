@@ -1,1 +1,124 @@
-<p>aram works!</p>
+<div class="container">
+    <div class="row" style="margin-top: 20px">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-light shadow">
+                <div class="card-header">
+                    <h2 class="text-center">Ranked solo/duo</h2>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <img src="/assets/ranked-emblems/Emblem_Challenger.png" alt="challenger"
+                            class="img-fluid mx-auto" style="max-height: 11vh; max-width: 10vw;">
+                    </div>
+                    <table class="table">
+                        <tbody>
+                            <tr (click)="rowRank = !rowRank" style="cursor: pointer">
+                                <th scope="row">Rank</th>
+                                <td>Challenger</td>
+                                <td>
+                                    <img *ngIf="!rowRank" src="/assets/misc-icons/chevron-compact-down.svg"
+                                        class="img-fluid">
+                                    <img *ngIf="rowRank" src="/assets/misc-icons/chevron-compact-up.svg"
+                                        class="img-fluid">
+                                </td>
+                            </tr>
+                            <tr *ngIf="rowRank">
+                                <th scope="row" class="text-secondary">LP</th>
+                                <td>1216</td>
+                            </tr>
+                            <tr *ngIf="rowRank && inPromo">
+                                <th scope="row" class="text-secondary">Promo</th>
+                                <td> W L - - -</td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row">Games played</th>
+                                <td>675</td>
+                            </tr>
+                            <tr style="cursor: pointer" (click)="rowWr = !rowWr">
+                                <th scope="row">Winrate</th>
+                                <td>63.9% </td>
+                                <td>
+                                    <img *ngIf="!rowWr" src="/assets/misc-icons/chevron-compact-down.svg"
+                                        class="img-fluid">
+                                    <img *ngIf="rowWr" src="/assets/misc-icons/chevron-compact-up.svg"
+                                        class="img-fluid">
+                                </td>
+                            </tr>
+                            <tr *ngIf="rowWr">
+                                <th scope="row" class="text-secondary">Wins</th>
+                                <td>431</td>
+                            </tr>
+                            <tr *ngIf="rowWr">
+                                <th scope="row" class="text-secondary">Losses</th>
+                                <td>244</td>
+                            </tr>
+
+                            <tr *ngIf="!role" style="cursor: pointer" (click)="toggleRole()">
+                                <th scope="row">Best role</th>
+                                <td><img src="/assets/positions/Mid.png" class="img-fluid mx-auto"
+                                        style="max-width: 25px"> Middle</td>
+                                <td>
+                                    <img src="/assets/misc-icons/chevron-compact-down.svg" class="img-fluid">
+                                </td>
+                            </tr>
+                            <tr *ngIf="role" (click)="toggleRole()">
+                                <th>Role overview</th>
+                                <td></td>
+                                <td>
+                                    <img src="/assets/misc-icons/chevron-compact-up.svg" style="cursor: pointer"
+                                        class="img-fluid">
+                                </td>
+                            </tr>
+                            <tr *ngIf="role" style="cursor: pointer" (click)="toggleRole()">
+                                <th>Role</th>
+                                <th>Games</th>
+                                <th>
+                                    WR
+                                </th>
+                            </tr>
+                            <tr *ngFor="let role of roles">
+                                <th class="text-secondary"><img src="/assets/positions/Top.png"
+                                        class="img-fluid mx-auto" style="max-width: 25px"> Top</th>
+                                <td>13</td>
+                                <td>67%</td>
+                            </tr>
+
+                            <tr *ngIf="!champ" style="cursor: pointer" (click)="toggleChamp()">
+                                <th scope="row">Best champ</th>
+                                <td><img src="http://ddragon.leagueoflegends.com/cdn/12.23.1/img/champion/Pantheon.png"
+                                        class="img-fluid" style="max-width: 25px"> 90%</td>
+                                <td>
+                                    <img *ngIf="!champ" src="/assets/misc-icons/chevron-compact-down.svg"
+                                        class="img-fluid">
+                                    <img *ngIf="champ" src="/assets/misc-icons/chevron-compact-up.svg"
+                                        class="img-fluid">
+                                </td>
+                            </tr>
+                            <tr *ngIf="champ" (click)="toggleChamp()" >
+                                <th>Overview</th>
+                                <th></th>
+                                <td>
+                                    <img src="/assets/misc-icons/chevron-compact-up.svg" style="cursor: pointer"
+                                        class="img-fluid">
+                                </td>
+                            </tr>
+                            <tr *ngIf="champ" style="cursor: pointer" (click)="toggleChamp()">
+                                <th>Champion</th>
+                                <th>Games</th>
+                                <th>WR</th>
+                            </tr>
+                            <tr *ngFor="let champ of champs">
+                                <td><img src="http://ddragon.leagueoflegends.com/cdn/12.23.1/img/champion/Pantheon.png"
+                                    class="img-fluid" style="max-width: 25px"></td>
+                                <td>50</td>
+                                <td>75%</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

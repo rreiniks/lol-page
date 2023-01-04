@@ -12,4 +12,15 @@ export class FlexComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  data = [
+    {
+      name: 'Win',
+      value: 55
+    },
+    {
+      name: 'Lose',
+      value: 45
+    }
+  ];
+  
 }
