@@ -42,16 +42,15 @@ export class DatabaseService {
                             var data: any;
                             data = res;
                             if (!data.affectedRows) resolve(false);
+                            else resolve(true);
                         });
                     });
                     
                     const postSuccess = await postPromise;
-                    resolve(postSuccess);
 
-                } else {
+                } else if (data.status.status_code){
                     resolve(false);
                 }
-                break;
             }
             resolve(true);
         });

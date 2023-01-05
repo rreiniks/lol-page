@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Match } from './match.model';
-import { first } from 'rxjs';
+import { first, of } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -38,7 +38,8 @@ export class RiotService {
                 var match = new Match;
                 var i = 0;
                 if (data.info) {
-                    if (data.info.gameType === 'CUSTOM_GAME') resolve(false);
+                    console.log(data.info);
+                    if (data.info.gameType === 'CUSTOM_GAME' || !data.info.gameType) resolve(false);
                     for (i; i < 9; i++) {
                         if (data.info.participants[i].puuid === puuid) break;
                     }
