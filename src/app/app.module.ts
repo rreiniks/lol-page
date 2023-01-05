@@ -15,7 +15,6 @@ import { HowlingabyssComponent } from './howlingabyss/howlingabyss.component';
 import { BlindComponent } from './summonersrift/normal/blind/blind.component';
 import { SummonerComponent } from './summoner/summoner.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { PieChartModule } from '@swimlane/ngx-charts';
 import { RiotService } from './shared/riot.service';
 import { DatabaseService } from './shared/database.service';
 import { SoloComponent } from './summonersrift/ranked/solo/solo.component';
@@ -44,7 +43,6 @@ import { NormalComponent } from './summonersrift/normal/normal.component';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    PieChartModule,
   ],
   providers: [
     HttpClient,
