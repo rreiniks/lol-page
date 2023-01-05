@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Match } from './match.model';
+import { first } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -14,25 +15,19 @@ export class RiotService {
         return this.http.get('http://localhost:3000/online/summoner/' + region + '/' + username);
     }
 
-    updateMatchList(region: string, puuid: string) {
-        var start = 0;
-        var count = 100;
-
-
-        return new Promise((resolve) => {
-            this.http.get('http://localhost:3000/online/matches/' + region + '/' + puuid + '/' + start + '/' + count).subscribe(res => {
-                var data: any;
-                data = res;
-                var ret: any;
-                for(const m in data){
-                    this.http.get('http://localhost:3000/matches/' + puuid + '/' + data[m]).subscribe(res => {
-                        if(res)data.splice(m, 1);
-                    })
-                }
-                resolve(data);
-            })
-        });
-
+    async updateMatchList(region: string, puuid: string): Promise<any> {
+        const start = 0;
+        const count = 100;
+        var data: any;
+        data = await this.http.get('http://localhost:3000/online/matches/' + region + '/' + puuid + '/' + start + '/' + count).pipe(first()).toPromise();
+        const matches = [];
+        for (const m in data) {
+            const match = await this.http.get('http://localhost:3000/matches/' + puuid + '/' + data[m]).pipe(first()).toPromise();
+            if (!match) {
+                matches.push(data[m]);
+            }
+        }
+        return matches;
     }
 
     async getMatchData(matchid: string, puuid: string, region: string) {
@@ -43,7 +38,7 @@ export class RiotService {
                 var match = new Match;
                 var i = 0;
                 if (data.info) {
-                    if(data.info.gameType === 'CUSTOM_GAME')resolve(false);
+                    if (data.info.gameType === 'CUSTOM_GAME') resolve(false);
                     for (i; i < 9; i++) {
                         if (data.info.participants[i].puuid === puuid) break;
                     }

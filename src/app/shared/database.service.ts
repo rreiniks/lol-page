@@ -34,8 +34,11 @@ export class DatabaseService {
                 data = (await this.riotService.getMatchData(matches[match], puuid, region));
                 if (data.matchid) {
                     m = data;
-                    await this.http.post<Match>('http://localhost:3000/matches', m);
-                    console.log(m);
+                    this.http.post('http://localhost:3000/matches', m).subscribe(res => {
+                        var data: any;
+                        data = res;
+                        if(data.affectedRows)resolve(false);
+                    });
                 }
                 else resolve(false);
                 break;
