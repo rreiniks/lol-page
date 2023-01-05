@@ -27,24 +27,35 @@ export class DatabaseService {
 
     async storeMatches(puuid: string, matches: string[], region: string) {
         return new Promise(async (resolve) => {
-
             for (const match in matches) {
                 var m = new Match;
                 var data: any;
+                
                 data = (await this.riotService.getMatchData(matches[match], puuid, region));
+                
                 if (data.matchid) {
+                   
                     m = data;
-                    this.http.post('http://localhost:3000/matches', m).subscribe(res => {
-                        var data: any;
-                        data = res;
-                        if(data.affectedRows)resolve(false);
+
+                    const postPromise = new Promise((resolve) => {
+                        this.http.post('http://localhost:3000/matches', m).subscribe(res => {
+                            var data: any;
+                            data = res;
+                            if (!data.affectedRows) resolve(false);
+                        });
                     });
+                    
+                    const postSuccess = await postPromise;
+                    resolve(postSuccess);
+
+                } else {
+                    resolve(false);
                 }
-                else resolve(false);
                 break;
             }
             resolve(true);
-        })
+        });
     }
+
 
 }
