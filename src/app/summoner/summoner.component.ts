@@ -15,12 +15,13 @@ export class SummonerComponent implements OnInit {
   currentSummoner = new Summoner;
   region = "EUW1";
   username!: string;
-  errorCode!: number;
-  errorMsg!: string;
+  errorCode = -1;
+  errorMsg = '';
 
   constructor(private riotService: RiotService, private databaseService: DatabaseService, private router: Router, private authService: AuthService) { }
 
   ngOnInit(): void {
+    this.authService.deAuth();
   }
 
   async onSearch() {
@@ -37,9 +38,14 @@ export class SummonerComponent implements OnInit {
 
         if (!len) { //summoner doesnt exist in database
           this.databaseService.putSummoner(this.currentSummoner).subscribe(res => {
-            console.log(res);
+            if(res === true)len = 1;
+            else{
+              this.errorMsg = 'Error saving summoner in database';
+            }
           });;
         }
+        
+        if (len === 1) {  //summoner exists in database
           var regionB = null;
 
           if (this.region === "EUW1" || this.region === "EUN1" || this.region === "RU" || this.region === "TR1") {
@@ -52,29 +58,33 @@ export class SummonerComponent implements OnInit {
 
           var matchList: any;
           await this.riotService.updateMatchList(regionB, this.currentSummoner.puuid).then(res => matchList = res);
-          if(await this.databaseService.storeMatches(this.currentSummoner.puuid, matchList, regionB)){
-            console.log('was able to save all matches');
+          if(matchList === false){
+            this.errorMsg = 'Could not retrieve player match list from backend server, please try again later';
           }else{
-            console.log('was not able to update all matches, more matches available in 2 minutes');
+          if(await this.databaseService.storeMatches(this.currentSummoner.puuid, matchList, regionB)){
+
+          }else{
+            this.errorMsg = ('Match data may be incomplete, try again later');
           }
+        }
+
+          this.authService.auth(this.currentSummoner);
+          this.router.navigate(['/rift']);
         
-        if (len === 1) {  //summoner exists in database
-          this.authService.auth();
-          this.router.navigate(['/rift'], { queryParams: this.currentSummoner });
         }
       }
     }
     else if (this.errorCode) {  //if riot api responded with an error
-      console.log(this.errorCode);
-      console.log(this.errorMsg);
       this.authService.deAuth();
     }
     else {  //any other error 
-      this.errorMsg = 'Unexpected error';
-      console.log('Unexpected error');
+      this.errorMsg = 'Could not connect to backend server, please try again later';
       this.authService.deAuth();
     }
 
+    if(this.errorMsg != '' || this.errorCode != -1)this.showAlert();
+    this.errorCode = -1;
+    this.errorMsg = '';
   }
 
   async getRiotSummonerData() {
@@ -90,16 +100,29 @@ export class SummonerComponent implements OnInit {
           this.currentSummoner.profileIconId = data.profileIconId;
           this.currentSummoner.puuid = data.puuid;
           this.currentSummoner.accountId = data.accountId;
+          this.currentSummoner.region = this.region;
+          this.currentSummoner.id = data.id;
         }
         else if (data.status.status_code && data.status.message) {
           this.errorCode = data.status.status_code;
           this.errorMsg = data.status.message;
         }
-        console.log(data);
+        resolve(null);
+      },error => {
+        this.errorMsg = 'Could not connect to backend server, please try again later';
         resolve(null);
       });
     });
 
+  }
+
+  showAlert(){
+    if(this.errorCode != -1 || this.errorMsg != ''){
+    var err = '';
+    if(this.errorCode != -1)err = err + this.errorCode + ' ';
+    if(this.errorMsg != '')err = err + this.errorMsg;
+    window.alert(err);
+    }
   }
 
 }

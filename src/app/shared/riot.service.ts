@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Match } from './match.model';
-import { first, of } from 'rxjs';
+import { catchError, first, of } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -16,29 +16,37 @@ export class RiotService {
     }
 
     async updateMatchList(region: string, puuid: string): Promise<any> {
-        const start = 0;
-        const count = 100;
-        var data: any;
-        data = await this.http.get('http://localhost:3000/online/matches/' + region + '/' + puuid + '/' + start + '/' + count).pipe(first()).toPromise();
-        const matches = [];
-        for (const m in data) {
-            const match = await this.http.get('http://localhost:3000/matches/' + puuid + '/' + data[m]).pipe(first()).toPromise();
-            if (!match) {
-                matches.push(data[m]);
+        try {
+            const start = 0;
+            const count = 100;
+            var data: any;
+            data = await this.http.get('http://localhost:3000/online/matches/' + region + '/' + puuid + '/' + start + '/' + count).pipe(first()).toPromise();
+            const matches = [];
+            for (const m in data) {
+                const match = await this.http.get('http://localhost:3000/matches/' + puuid + '/' + data[m]).pipe(first()).toPromise();
+                if (!match) {
+                    matches.push(data[m]);
+                }
             }
+            return matches;
+        } catch (error) {
+            return false;
         }
-        return matches;
     }
+
 
     async getMatchData(matchid: string, puuid: string, region: string) {
         return new Promise((resolve) => {
-            this.http.get('http://localhost:3000/online/mData/' + region + '/' + puuid + '/' + matchid).subscribe(res => {
+            this.http.get('http://localhost:3000/online/mData/' + region + '/' + puuid + '/' + matchid).pipe(
+                catchError(error => {
+                    return of(false);
+                })
+            ).subscribe(res => {
                 var data: any;
                 data = res;
                 var match = new Match;
                 var i = 0;
-                if (data.info) {
-                    console.log(data.info);
+                if (data.info && data.info.participants[0]) {
                     if (data.info.gameType === 'CUSTOM_GAME' || !data.info.gameType) resolve(false);
                     for (i; i < 9; i++) {
                         if (data.info.participants[i].puuid === puuid) break;
@@ -49,17 +57,33 @@ export class RiotService {
                     match.puuid = puuid;
                     match.win = data.info.participants[i].win;
                     match.championName = data.info.participants[i].championName;
-                    match.gameStartTimestamp = data.info.gameStartTimestamp;
+                    match.queueId = data.info.queueId;
                     if (match.gameMode === 'CLASSIC') {
                         match.teamPosition = data.info.participants[i].teamPosition;
                     }
                     resolve(match);
-                } else if (data.status.status_code) {
+                } else if (data.status && data.status.status_code) {
                     resolve(data);
                 } else {
-                    //unknown error
-                    console.error('error');
+                    //unknown error ignore
+                    resolve(false);
                 }
+            })
+        })
+    }
+
+    async getRankedData(region: string, id: string) {
+        return new Promise((resolve) => {
+            this.http.get('http://localhost:3000/online/ranked/' + region + '/' + id).pipe(
+                catchError(error => {
+                    console.error(error);
+                    resolve(false);
+                    return of(false);
+                })
+            ).subscribe(res => {
+                var data: any;
+                data = res;
+                resolve(data);
             })
         })
     }

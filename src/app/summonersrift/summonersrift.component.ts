@@ -14,11 +14,6 @@ export class SummonersriftComponent implements OnInit {
   currentSummoner!: Summoner;
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
-      var data: any;
-      data = params;
-      this.currentSummoner = data;
-    })
   }
 
 }

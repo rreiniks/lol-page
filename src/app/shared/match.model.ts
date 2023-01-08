@@ -6,5 +6,5 @@ export class Match {
     win!: boolean;
     gameMode!: string;
     gameType!: string;
-    gameStartTimestamp!: number;
+    queueId!: number;
 }

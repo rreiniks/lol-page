@@ -5,14 +5,14 @@
     </div>
     <div class="card-body">
       <div class="text-center">
-        <img src="/assets/ranked-emblems/Emblem_{{rank.name}}.png" alt="{{rank.name}}" class="img-fluid mx-auto"
+        <img *ngIf="!(rank.name === 'None')" src="/assets/ranked-emblems/Emblem_{{rank.name}}.png" alt="{{rank.name}}" class="img-fluid mx-auto"
           style="max-height: 11vh; max-width: 10vw;">
       </div>
       <table class="table">
         <tbody>
           <tr (click)="rowRank = !rowRank" style="cursor: pointer">
             <th scope="row">Rank</th>
-            <td>{{rank.name}}</td>
+            <td>{{rank.name}} {{rank.rank}}</td>
             <td>
               <img *ngIf="!rowRank" src="/assets/misc-icons/chevron-compact-down.svg" class="img-fluid">
               <img *ngIf="rowRank" src="/assets/misc-icons/chevron-compact-up.svg" class="img-fluid">
@@ -24,7 +24,9 @@
           </tr>
           <tr *ngIf="rowRank && inPromo">
             <th scope="row" class="text-secondary">Promo</th>
-            <td> W L - - -</td>
+            <td>
+              <ng-container *ngFor="let val of promo">{{ val }}</ng-container>
+            </td>
           </tr>
 
           <tr>
@@ -50,7 +52,7 @@
 
           <tr *ngIf="!role" style="cursor: pointer" (click)="toggleRole()">
             <th scope="row">Best role</th>
-            <td><img src="/assets/positions/{{bestRole}}.png" class="img-fluid mx-auto" style="max-width: 25px">
+            <td><img *ngIf="!(bestRole === 'None')" src="/assets/positions/{{bestRole}}.png" class="img-fluid mx-auto" style="max-width: 25px">
               {{bestRole}}</td>
             <td>
               <img src="/assets/misc-icons/chevron-compact-down.svg" class="img-fluid">
@@ -79,7 +81,7 @@
 
           <tr *ngIf="!champ" style="cursor: pointer" (click)="toggleChamp()">
             <th scope="row">Best champ</th>
-            <td><img src="http://ddragon.leagueoflegends.com/cdn/12.23.1/img/champion/{{bestChamp.name}}.png"
+            <td><img *ngIf="!(bestChamp.name === 'None')" src="http://ddragon.leagueoflegends.com/cdn/12.23.1/img/champion/{{bestChamp.name}}.png"
                 class="img-fluid" style="max-width: 25px"> {{bestChamp.wr}}</td>
             <td>
               <img *ngIf="!champ" src="/assets/misc-icons/chevron-compact-down.svg" class="img-fluid">

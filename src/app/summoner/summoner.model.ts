@@ -4,4 +4,6 @@ export class Summoner {
     profileIconId!: number;
     summonerLevel!: number;
     accountId!: string;
+    region!: string;
+    id!: string;
 }

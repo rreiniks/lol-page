@@ -22,7 +22,7 @@ export class DatabaseService {
 
 
     putSummoner(summoner: Summoner) {
-        return this.http.post<Summoner>('http://localhost:3000/summoners', summoner);
+        return this.http.post('http://localhost:3000/summoners', summoner);
     }
 
     async storeMatches(puuid: string, matches: string[], region: string) {
@@ -30,11 +30,11 @@ export class DatabaseService {
             for (const match in matches) {
                 var m = new Match;
                 var data: any;
-                
+
                 data = (await this.riotService.getMatchData(matches[match], puuid, region));
-                
+
                 if (data.matchid) {
-                   
+
                     m = data;
 
                     const postPromise = new Promise((resolve) => {
@@ -45,10 +45,10 @@ export class DatabaseService {
                             else resolve(true);
                         });
                     });
-                    
+
                     const postSuccess = await postPromise;
 
-                } else if (data.status.status_code){
+                } else if (data.status) {
                     resolve(false);
                 }
             }
@@ -56,5 +56,123 @@ export class DatabaseService {
         });
     }
 
+    async getRSDData(puuid: string) {
+        return new Promise(async (resolve) => {
+            var data: any;
+            var returnData: {
+                wins: number,
+                losses: number,
+                gp: number,
+                roleWins: {
+                    top: number,
+                    jungle: number,
+                    mid: number,
+                    bot: number,
+                    support: number,
+                },
+                roleGp: {
+                    top: number,
+                    jungle: number,
+                    mid: number,
+                    bot: number,
+                    support: number,
+                },
+                champWins: [
+                    { name: string, gamesPlayed: number, wins: number },
+                ],
+            } = {
+                wins: 0,
+                losses: 0,
+                gp: 0,
+                roleWins: {
+                    top: 0,
+                    jungle: 0,
+                    mid: 0,
+                    bot: 0,
+                    support: 0,
+                },
+                roleGp: {
+                    top: 0,
+                    jungle: 0,
+                    mid: 0,
+                    bot: 0,
+                    support: 0,
+                },
+                champWins: [{ name: 'dummy', gamesPlayed: 0, wins: 0 }],
+            }
+
+
+
+
+            try {
+                data = await new Promise((resolve1) => {
+                    this.http.get('http://localhost:3000/RSDGames/' + puuid).subscribe(res => {
+                        resolve1(res);
+                    });
+                })
+                for (var x in data) {
+                    returnData.gp++;
+                    if (data[x].win) returnData.wins++;
+                    else returnData.losses++;
+                    switch (data[x].teamPosition) {
+                        case 'TOP': {
+                            returnData.roleGp.top++;
+                            if (data[x].win) returnData.roleWins.top++;
+                            break;
+                        }
+                        case 'JUNGLE': {
+                            returnData.roleGp.jungle++;
+                            if (data[x].win) returnData.roleWins.jungle++;
+                            break;
+                        }
+                        case 'MIDDLE': {
+                            returnData.roleGp.mid++;
+                            if (data[x].win) returnData.roleWins.mid++;
+                            break;
+                        }
+                        case 'BOTTOM': {
+                            returnData.roleGp.bot++;
+                            if (data[x].win) returnData.roleWins.bot++;
+                            break;
+                        }
+                        case 'UTILITY': {
+                            returnData.roleGp.support++;
+                            if (data[x].win) returnData.roleWins.support++;
+                            break;
+                        }
+                    }
+                    var n: number = -1;
+                    if (data[x].championName === 'FiddleSticks') data[x].championName = 'Fiddlesticks'; //RIOT api inconsistency
+                    for (var i = 0; i < returnData.champWins.length; i++) {
+                        if (returnData.champWins[i].name === data[x].championName) {
+                            n = i;
+                            break;
+                        }
+                    }
+                    if (n != -1) {
+                        returnData.champWins[i].gamesPlayed++;
+                        if (data[x].win) returnData.champWins[i].wins++;
+                    } else {
+                        if (data[x].win) var w = 1;
+                        else var w = 0;
+                        returnData.champWins.push({
+                            name: data[x].championName,
+                            gamesPlayed: 1,
+                            wins: w,
+                        })
+                    }
+                }
+                returnData.champWins.shift();
+                returnData.champWins = returnData.champWins.sort(function (a, b) {
+                    return b.gamesPlayed - a.gamesPlayed;
+                });
+                resolve(returnData);
+                return returnData;
+            } catch (error) {
+                resolve(false);
+                return false;
+            }
+        })
+    }
 
 }
