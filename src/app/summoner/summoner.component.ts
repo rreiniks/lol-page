@@ -84,6 +84,7 @@ export class SummonerComponent implements OnInit {
           if(matchList === false){
             this.errorMsg = 'Could not retrieve player match list from backend server, please try again later';
           }else{
+            this.loadingMsg = 'Storing matches';
           if(await this.databaseService.storeMatches(this.currentSummoner.puuid, matchList, regionB)){
 
           }else{

@@ -56,14 +56,14 @@ export class SoloComponent implements OnInit {
       if (data.status) {
         alert(data.status.message);
         this.authService.deAuth;
-      }else if (data === false) {
-        alert('Could not connect to backend server, please try again later');
-        this.authService.deAuth();
-      }
+      } 
       else if (data[1].queueType = "RANKED_SOLO_5x5")
         this.rnk = data[1];
       else if (data[0].queueType = "RANKED_SOLO_5x5") this.rnk = data[0];
-      
+      if (data === false) {
+        alert('Could not connect to backend server, please try again later');
+        this.authService.deAuth();
+      }
       else {
         this.rank.lp = this.rnk.leaguePoints;
         this.rank.name = this.toCapitalizedLower(this.rnk.tier);
