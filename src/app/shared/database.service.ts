@@ -56,7 +56,7 @@ export class DatabaseService {
         });
     }
 
-    async getRSDData(puuid: string) {
+    async getRSDData(puuid: string, queueId: number) {
         return new Promise(async (resolve) => {
             var data: any;
             var returnData: {
@@ -106,7 +106,7 @@ export class DatabaseService {
 
             try {
                 data = await new Promise((resolve1) => {
-                    this.http.get('http://localhost:3000/RSDGames/' + puuid).subscribe(res => {
+                    this.http.get('http://localhost:3000/RSDGames/' + puuid + '/' + queueId).subscribe(res => {
                         resolve1(res);
                     });
                 })

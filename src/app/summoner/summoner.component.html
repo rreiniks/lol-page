@@ -11,13 +11,17 @@
       <option value="KR">Korea</option>
       <option value="LA1">Latin America North</option>
       <option value="LA2">Latin America South</option>
-      <option value="NA">North America</option>
+      <option value="NA1">North America</option>
       <option value="OC1">Oceania</option>
       <option value="RU">Russia</option>
       <option value="TR1">Turkey</option>
     </select>
     <div class="mx-auto d-grid col-1 pt-5">
-      <button (click)="onSearch()" class="btn-info btn">SEARCH</button>
+      <button *ngIf="!search" (click)="onSearch()" class="btn-info btn">SEARCH</button>
+      <p>{{loadingMsg}}</p>
+      <div class="progress" *ngIf="search">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%"></div>
+      </div>
     </div>
   </div>
 </div>

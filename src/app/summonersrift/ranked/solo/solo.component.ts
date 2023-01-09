@@ -19,11 +19,11 @@ export class SoloComponent implements OnInit {
   rank = {
     name: 'None',
     rank: '',
-    lp: '0',
+    lp: 0,
     games: 0,
     wr: 'None',
-    wins: 'None',
-    losses: 'None'
+    wins: 0,
+    losses: 0
   };
 
   bestRole = 'None';
@@ -56,14 +56,14 @@ export class SoloComponent implements OnInit {
       if (data.status) {
         alert(data.status.message);
         this.authService.deAuth;
+      }else if (data === false) {
+        alert('Could not connect to backend server, please try again later');
+        this.authService.deAuth();
       }
       else if (data[1].queueType = "RANKED_SOLO_5x5")
         this.rnk = data[1];
       else if (data[0].queueType = "RANKED_SOLO_5x5") this.rnk = data[0];
-      if (data === false) {
-        alert('Could not connect to backend server, please try again later');
-        this.authService.deAuth();
-      }
+      
       else {
         this.rank.lp = this.rnk.leaguePoints;
         this.rank.name = this.toCapitalizedLower(this.rnk.tier);
@@ -76,7 +76,7 @@ export class SoloComponent implements OnInit {
     }
 
     var data2: any;
-    data2 = await this.databaseService.getRSDData(this.currentSummoner.puuid);
+    data2 = await this.databaseService.getRSDData(this.currentSummoner.puuid, 420);
     if (data2 === false) {
       alert('Could not connect to backend server, please try again later');
       this.authService.deAuth();
@@ -86,7 +86,7 @@ export class SoloComponent implements OnInit {
       this.rank.games = data2.gp;
       this.rank.wins = data2.wins;
       this.rank.losses = data2.losses;
-      this.rank.wr = this.getPercent(this.rnk.wins, this.rank.games);
+      this.rank.wr = this.getPercent(this.rank.wins, this.rank.games);
 
       this.bestChamp.name = data2.champWins[0].name;
       this.bestChamp.wr = this.getPercent(data2.champWins[0].wins, data2.champWins[0].gamesPlayed);
@@ -160,7 +160,7 @@ export class SoloComponent implements OnInit {
   }
 
   getPercent(n1: number, n2: number) {
-    if (n1 === 0) return '0%';
+    if (n2 === 0) return '0%';
     return Math.round(((n1 / n2) * 100)).toString() + '%';
   }
 
