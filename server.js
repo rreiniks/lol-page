@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const request = require('request');
 const cors = require('cors');
-const apiKey = 'RGAPI-9833ebe4-3b04-4d20-b3ae-d0b78977e75b';
+const apiKey = '';
 
 // Set up MySQL connection
 const connection = mysql.createConnection({
